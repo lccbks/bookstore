@@ -4,6 +4,7 @@ from flask import jsonify
 from be.model import seller
 import json
 
+''' seller 蓝图的定义，调用 be.model.seller 中定义的与数据库间的交互方法 '''
 bp_seller = Blueprint("seller", __name__, url_prefix="/seller")
 
 

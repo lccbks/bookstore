@@ -7,9 +7,10 @@ class Store:
     database: str
 
     def __init__(self, db_path):
-        self.database = os.path.join(db_path, "be.db")
+        self.database = os.path.join(db_path, "be.db")  # 数据库路径
         self.init_tables()
 
+    ''' 如果不存在对应的表则创建 '''
     def init_tables(self):
         try:
             conn = self.get_db_conn()
@@ -46,6 +47,7 @@ class Store:
             logging.error(e)
             conn.rollback()
 
+    ''' 连接数据库 '''
     def get_db_conn(self) -> sqlite.Connection:
         return sqlite.connect(self.database)
 

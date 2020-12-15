@@ -5,6 +5,8 @@ import sqlite3 as sqlite
 from be.model import error
 from be.model import db_conn
 
+''' 用户共有的与数据库之间的操作 '''
+
 # encode a json string like:
 #   {
 #       "user_id": [user name],

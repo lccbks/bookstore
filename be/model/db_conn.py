@@ -1,5 +1,8 @@
 from be.model import store
 
+''' 调用 be.model.store 中的 get_db_conn() 方法连接数据库 '''
+''' 提供 id 是否存在的判断操作 '''
+
 
 class DBConn:
     def __init__(self):

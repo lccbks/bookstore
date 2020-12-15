@@ -2,6 +2,8 @@ import sqlite3 as sqlite
 from be.model import error
 from be.model import db_conn
 
+''' seller 与数据库之间的操作 '''
+
 
 class Seller(db_conn.DBConn):
 

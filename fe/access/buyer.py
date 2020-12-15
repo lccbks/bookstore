@@ -3,6 +3,8 @@ import simplejson
 from urllib.parse import urljoin
 from fe.access.auth import Auth
 
+''' buyer 特有接口，同样提供给 bench 和 test 调用 '''
+
 
 class Buyer:
     def __init__(self, url_prefix, user_id, password):

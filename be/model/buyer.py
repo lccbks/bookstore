@@ -5,11 +5,14 @@ import logging
 from be.model import db_conn
 from be.model import error
 
+''' buyer 与数据库交互操作的定义 '''
+
 
 class Buyer(db_conn.DBConn):
     def __init__(self):
         db_conn.DBConn.__init__(self)
 
+    ''' 增加新订单 '''
     def new_order(self, user_id: str, store_id: str, id_and_count: [(str, int)]) -> (int, str, str):
         order_id = ""
         try:

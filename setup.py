@@ -6,12 +6,12 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="bookstore",
     version="0.0.1",
-    author="DaSE-DBMS",
-    author_email="DaSE-DBMS@DaSE-DBMS.com",
+    author="Qiuke Chen & Xizhi Chen & Yuxin Li",
+    author_email="yxleezw@163.com",
     description="Buy Books Online",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/DaSE-DBMS/bookstore.git",
+    url="https://github.com/lccbks/bookstore.git",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",

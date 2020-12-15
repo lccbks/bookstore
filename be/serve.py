@@ -25,11 +25,17 @@ def be_shutdown():
 
 
 def be_run():
+    # 设置目录
     this_path = os.path.dirname(__file__)
     parent_path = os.path.dirname(this_path)
+
+    # 设置日志的目录
     log_file = os.path.join(parent_path, "app.log")
+
+    # 根据 be.model.store 创建数据库并建表(如果表不存在的话)
     init_database(parent_path)
 
+    # 日志的相关配置
     logging.basicConfig(filename=log_file, level=logging.ERROR)
     handler = logging.StreamHandler()
     formatter = logging.Formatter(
@@ -38,6 +44,7 @@ def be_run():
     handler.setFormatter(formatter)
     logging.getLogger().addHandler(handler)
 
+    # 初始化 Flask 服务器，注册蓝图并运行(三个蓝图定义在 be.view 下的三个.py文件中)
     app = Flask(__name__)
     app.register_blueprint(bp_shutdown)
     app.register_blueprint(auth.bp_auth)

@@ -3,6 +3,7 @@ from flask import request
 from flask import jsonify
 from be.model import user
 
+''' 用户普遍操作蓝图定义 '''
 bp_auth = Blueprint("auth", __name__, url_prefix="/auth")
 
 

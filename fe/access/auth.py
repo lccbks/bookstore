@@ -1,6 +1,8 @@
 import requests
 from urllib.parse import urljoin
 
+''' 用户共有接口，提供给 bench 和 test 调用 '''
+
 
 class Auth:
     def __init__(self, url_prefix):

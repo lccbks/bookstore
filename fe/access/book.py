@@ -4,6 +4,8 @@ import random
 import base64
 import simplejson as json
 
+''' 使用 sqlite3 连接 fe/data/book.db 数据库并对书本信息提供查询方法 '''
+
 
 class Book:
     id: str

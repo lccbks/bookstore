@@ -3,6 +3,7 @@ from flask import request
 from flask import jsonify
 from be.model.buyer import Buyer
 
+''' buyer 蓝图的定义，调用 be.model.buyer 中定义的与数据库间的交互方法 '''
 bp_buyer = Blueprint("buyer", __name__, url_prefix="/buyer")
 
 

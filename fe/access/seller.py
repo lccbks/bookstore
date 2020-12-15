@@ -3,6 +3,8 @@ from urllib.parse import urljoin
 from fe.access import book
 from fe.access.auth import Auth
 
+''' seller 特有接口，同样提供给 bench 和 test 调用 '''
+
 
 class Seller:
     def __init__(self, url_prefix, seller_id: str, password: str):
