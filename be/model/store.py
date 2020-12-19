@@ -96,7 +96,7 @@ class Store:
 
     ''' 连接数据库 '''
     def get_db_conn(self):
-        db = pymysql.connect(host='127.0.0.1', port=3306, user='root', password='1234zxcv',
+        db = pymysql.connect(host='127.0.0.1', port=3306, user='root', password='123456',
                              db='bookstore', charset='utf8')
         # return sqlite.connect(self.database)
         return db
