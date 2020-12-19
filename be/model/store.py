@@ -116,5 +116,5 @@ def get_db_conn():
     return database_instance.get_db_conn()
 
 
-if __name__ == '__main__':
-    init_database()
+# if __name__ == '__main__':
+#     init_database()
