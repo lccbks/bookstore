@@ -1,4 +1,5 @@
 import sqlite3 as sqlite
+import pymysql
 import uuid
 import json
 import logging
@@ -57,7 +58,7 @@ class Buyer(db_conn.DBConn):
                 (uid, store_id, user_id))
             self.conn.commit()
             order_id = uid
-        except sqlite.Error as e:
+        except pymysql.Error as e:
             logging.info("528, {}".format(str(e)))
             return 528, "{}".format(str(e)), ""
         except BaseException as e:
@@ -132,7 +133,7 @@ class Buyer(db_conn.DBConn):
 
             conn.commit()
 
-        except sqlite.Error as e:
+        except pymysql.Error as e:
             return 528, "{}".format(str(e))
 
         except BaseException as e:
@@ -157,7 +158,7 @@ class Buyer(db_conn.DBConn):
                 return error.error_non_exist_user_id(user_id)
 
             self.conn.commit()
-        except sqlite.Error as e:
+        except pymysql.Error as e:
             return 528, "{}".format(str(e))
         except BaseException as e:
             return 530, "{}".format(str(e))

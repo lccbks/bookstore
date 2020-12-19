@@ -89,10 +89,10 @@ class Store:
                 ");"
             )
 
-            cursor.commit()
+            db.commit()
         except sqlite.Error as e:
             logging.error(e)
-            cursor.rollback()
+            db.rollback()
 
     ''' 连接数据库 '''
     def get_db_conn(self):
@@ -115,5 +115,5 @@ def get_db_conn():
     return database_instance.get_db_conn()
 
 
-if __name__ == '__main__':
-    init_database()
+# if __name__ == '__main__':
+#     init_database()

@@ -7,6 +7,7 @@ from be.view import auth
 from be.view import seller
 from be.view import buyer
 from be.model.store import init_database
+from be import config
 
 bp_shutdown = Blueprint("shutdown", __name__)
 
@@ -33,7 +34,7 @@ def be_run():
     log_file = os.path.join(parent_path, "app.log")
 
     # 根据 be.model.store 创建数据库并建表(如果表不存在的话)
-    init_database(parent_path)
+    init_database()
 
     # 日志的相关配置
     logging.basicConfig(filename=log_file, level=logging.ERROR)
@@ -46,6 +47,7 @@ def be_run():
 
     # 初始化 Flask 服务器，注册蓝图并运行(三个蓝图定义在 be.view 下的三个.py文件中)
     app = Flask(__name__)
+    app.config.from_object(config)
     app.register_blueprint(bp_shutdown)
     app.register_blueprint(auth.bp_auth)
     app.register_blueprint(seller.bp_seller)
