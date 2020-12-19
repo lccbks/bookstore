@@ -12,6 +12,7 @@ from be.model import error
 class Buyer(db_conn.DBConn):
     def __init__(self):
         db_conn.DBConn.__init__(self)
+        self.cursor = self.conn.cursor()
 
     ''' 增加新订单 '''
     def new_order(self, user_id: str, store_id: str, id_and_count: [(str, int)]) -> (int, str, str):
@@ -24,11 +25,11 @@ class Buyer(db_conn.DBConn):
             uid = "{}_{}_{}".format(user_id, store_id, str(uuid.uuid1()))
 
             for book_id, count in id_and_count:
-                cursor = self.conn.cursor().execute(
+                self.cursor.execute(
                     "SELECT book_id, stock_level, book_info FROM store "
                     "WHERE store_id = %s AND book_id = %s;",
                     (store_id, book_id))
-                row = cursor.fetchone()
+                row = self.cursor.fetchone()
                 if row is None:
                     return error.error_non_exist_book_id(book_id) + (order_id, )
 
@@ -70,8 +71,8 @@ class Buyer(db_conn.DBConn):
     def payment(self, user_id: str, password: str, order_id: str) -> (int, str):
         conn = self.conn
         try:
-            cursor = conn.cursor().execute("SELECT order_id, user_id, store_id FROM new_order WHERE order_id = %s", (order_id,))
-            row = cursor.fetchone()
+            self.cursor.execute("SELECT order_id, user_id, store_id FROM new_order WHERE order_id = %s", (order_id,))
+            row = self.cursor.fetchone()
             if row is None:
                 return error.error_invalid_order_id(order_id)
 
@@ -82,16 +83,16 @@ class Buyer(db_conn.DBConn):
             if buyer_id != user_id:
                 return error.error_authorization_fail()
 
-            cursor = conn.cursor().execute("SELECT balance, password FROM user WHERE user_id = %s;", (buyer_id,))
-            row = cursor.fetchone()
+            self.cursor.execute("SELECT balance, password FROM user WHERE user_id = %s;", (buyer_id,))
+            row = self.cursor.fetchone()
             if row is None:
                 return error.error_non_exist_user_id(buyer_id)
             balance = row[0]
             if password != row[1]:
                 return error.error_authorization_fail()
 
-            cursor = conn.cursor().execute("SELECT store_id, user_id FROM user_store WHERE store_id = %s;", (store_id,))
-            row = cursor.fetchone()
+            self.cursor.execute("SELECT store_id, user_id FROM user_store WHERE store_id = %s;", (store_id,))
+            row = self.cursor.fetchone()
             if row is None:
                 return error.error_non_exist_store_id(store_id)
 
@@ -100,9 +101,9 @@ class Buyer(db_conn.DBConn):
             if not self.user_id_exist(seller_id):
                 return error.error_non_exist_user_id(seller_id)
 
-            cursor = conn.cursor().execute("SELECT book_id, count, price FROM new_order_detail WHERE order_id = %s;", (order_id,))
+            self.cursor.execute("SELECT book_id, count, price FROM new_order_detail WHERE order_id = %s;", (order_id,))
             total_price = 0
-            for row in cursor:
+            for row in self.cursor:
                 count = row[1]
                 price = row[2]
                 total_price = total_price + price * count
@@ -143,8 +144,8 @@ class Buyer(db_conn.DBConn):
 
     def add_funds(self, user_id, password, add_value) -> (int, str):
         try:
-            cursor = self.conn.cursor().execute("SELECT password  from user where user_id=%s", (user_id,))
-            row = cursor.fetchone()
+            self.cursor.eself.cursor.xecute("SELECT password  from user where user_id=%s", (user_id,))
+            row = self.cursor.fetchone()
             if row is None:
                 return error.error_authorization_fail()
 

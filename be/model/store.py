@@ -27,23 +27,26 @@ class Store:
             )
 
             cursor.execute(
-                "CREATE TABLE IF NOT EXISTS store( "
-                "store_id VARCHAR(100), "
-                "book_id VARCHAR(10), "
-                "book_info TEXT, "
-                "stock_level INTEGER,"
-                "PRIMARY KEY(store_id, book_id))"
-            )
-
-            cursor.execute(
                 "CREATE TABLE IF NOT EXISTS user_store("
                 "user_id VARCHAR(100), "
                 "store_id VARCHAR(100), "
                 "PRIMARY KEY(user_id, store_id), "
                 "FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE ON UPDATE CASCADE, "
-                "FOREIGN KEY(store_id) REFERENCES store(store_id) ON DELETE CASCADE ON UPDATE CASCADE"
                 ");"
             )
+
+            cursor.execute(
+                "CREATE TABLE IF NOT EXISTS store( "
+                "store_id VARCHAR(100), "
+                "book_id VARCHAR(10), "
+                "book_info TEXT, "
+                "stock_level INTEGER,"
+                "PRIMARY KEY(store_id, book_id),"
+                "FOREIGN KEY(store_id) REFERENCES user_store(store_id) ON DELETE CASCADE ON UPDATE CASCADE"
+                ")"
+            )
+
+
 
             cursor.execute(
                 "CREATE TABLE IF NOT EXISTS new_order( "

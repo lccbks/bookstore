@@ -41,6 +41,7 @@ class User(db_conn.DBConn):
 
     def __init__(self):
         db_conn.DBConn.__init__(self)
+        self.cursor = self.conn.cursor()
 
     def __check_token(self, user_id, db_token, token) -> bool:
         try:
@@ -70,8 +71,8 @@ class User(db_conn.DBConn):
         return 200, "ok"
 
     def check_token(self, user_id: str, token: str) -> (int, str):
-        cursor = self.conn.cursor().execute("SELECT token from user where user_id=%s", (user_id,))
-        row = cursor.fetchone()
+        self.cursor.execute("SELECT token from user where user_id=%s", (user_id,))
+        row = self.cursor.fetchone()
         if row is None:
             return error.error_authorization_fail()
         db_token = row[0]
@@ -80,8 +81,8 @@ class User(db_conn.DBConn):
         return 200, "ok"
 
     def check_password(self, user_id: str, password: str) -> (int, str):
-        cursor = self.conn.cursor().execute("SELECT password from user where user_id=%s", (user_id,))
-        row = cursor.fetchone()
+        self.cursor.execute("SELECT password from user where user_id=%s", (user_id,))
+        row = self.cursor.fetchone()
         if row is None:
             return error.error_authorization_fail()
 
