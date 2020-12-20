@@ -21,24 +21,28 @@ class TestAddStockLevel:
             assert code == 200
         yield
 
+    @pytest.mark.run(order=17)
     def test_error_user_id(self):
         for b in self.books:
             book_id = b.id
             code = self.seller.add_stock_level(self.user_id + "_x", self.store_id, book_id, 10)
             assert code != 200
 
+    @pytest.mark.run(order=18)
     def test_error_store_id(self):
         for b in self.books:
             book_id = b.id
             code = self.seller.add_stock_level(self.user_id, self.store_id + "_x", book_id, 10)
             assert code != 200
 
+    @pytest.mark.run(order=19)
     def test_error_book_id(self):
         for b in self.books:
             book_id = b.id
             code = self.seller.add_stock_level(self.user_id, self.store_id, book_id + "_x", 10)
             assert code != 200
 
+    @pytest.mark.run(order=20)
     def test_ok(self):
         for b in self.books:
             book_id = b.id

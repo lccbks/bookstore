@@ -12,11 +12,13 @@ class TestCreateStore:
         self.password = self.user_id
         yield
 
+    @pytest.mark.run(order=11)
     def test_ok(self):
         self.seller = register_new_seller(self.user_id, self.password)
         code = self.seller.create_store(self.store_id)
         assert code == 200
 
+    @pytest.mark.run(order=12)
     def test_error_exist_store_id(self):
         self.seller = register_new_seller(self.user_id, self.password)
         code = self.seller.create_store(self.store_id)

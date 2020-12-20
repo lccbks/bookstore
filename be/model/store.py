@@ -18,7 +18,7 @@ class Store:
             cursor = db.cursor()
             cursor.execute(
                 "CREATE TABLE IF NOT EXISTS user ("
-                "user_id VARCHAR(100) PRIMARY KEY, "
+                "user_id VARCHAR(200) PRIMARY KEY, "
                 "password TEXT NOT NULL, "
                 "balance INTEGER NOT NULL, "
                 "token TEXT, "
@@ -28,8 +28,8 @@ class Store:
 
             cursor.execute(
                 "CREATE TABLE IF NOT EXISTS user_store("
-                "user_id VARCHAR(100), "
-                "store_id VARCHAR(100) unique, "
+                "user_id VARCHAR(200), "
+                "store_id VARCHAR(200) unique, "
                 "PRIMARY KEY(user_id, store_id), "
                 "FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE ON UPDATE CASCADE"
                 ");"
@@ -37,9 +37,9 @@ class Store:
 
             cursor.execute(
                 "CREATE TABLE IF NOT EXISTS store( "
-                "store_id VARCHAR(100), "
-                "book_id VARCHAR(10), "
-                "book_info TEXT, "
+                "store_id VARCHAR(200), "
+                "book_id VARCHAR(200), "
+                "book_info LONGTEXT, "
                 "stock_level INTEGER,"
                 "PRIMARY KEY(store_id, book_id),"
                 "FOREIGN KEY(store_id) REFERENCES user_store(store_id) ON DELETE CASCADE ON UPDATE CASCADE"
@@ -48,9 +48,9 @@ class Store:
 
             cursor.execute(
                 "CREATE TABLE IF NOT EXISTS new_order( "
-                "order_id VARCHAR(100) PRIMARY KEY, "
-                "user_id VARCHAR(100), "
-                "store_id VARCHAR(100), "
+                "order_id VARCHAR(200) PRIMARY KEY, "
+                "user_id VARCHAR(200), "
+                "store_id VARCHAR(200), "
                 "order_time DATETIME, "
                 "state ENUM('dont', 'doing', 'done'), "
                 "message TEXT, "
@@ -61,15 +61,15 @@ class Store:
 
             cursor.execute(
                 "CREATE TABLE IF NOT EXISTS unpay_order("
-                "order_id VARCHAR(100), "
+                "order_id VARCHAR(200), "
                 "order_time DATETIME"
                 ");"
             )
 
             cursor.execute(
                 "CREATE TABLE IF NOT EXISTS new_order_detail( "
-                "order_id VARCHAR(100), "
-                "book_id VARCHAR(10), "
+                "order_id VARCHAR(200), "
+                "book_id VARCHAR(200), "
                 "count INTEGER, "
                 "price INTEGER, "
                 "PRIMARY KEY(order_id, book_id), "
@@ -79,9 +79,9 @@ class Store:
 
             cursor.execute(
                 "CREATE TABLE IF NOT EXISTS book_comment("
-                "user_id VARCHAR(100), "
-                "store_id VARCHAR(100), "
-                "book_id VARCHAR(10), "
+                "user_id VARCHAR(200), "
+                "store_id VARCHAR(200), "
+                "book_id VARCHAR(200), "
                 "comment TEXT, "
                 "rate int, "
                 "PRIMARY KEY(user_id, store_id, book_id), "
