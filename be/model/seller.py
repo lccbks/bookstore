@@ -1,4 +1,3 @@
-import sqlite3 as sqlite
 import pymysql
 from be.model import error
 from be.model import db_conn

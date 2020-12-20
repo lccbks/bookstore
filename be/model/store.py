@@ -1,6 +1,5 @@
 import logging
 import os
-import sqlite3 as sqlite
 import pymysql
 
 
@@ -47,6 +46,16 @@ class Store:
             )
 
             cursor.execute(
+                "CREATE TABLE IF NOT EXISTS new_order_detail( "
+                "order_id VARCHAR(200), "
+                "book_id VARCHAR(200), "
+                "count INTEGER, "
+                "price INTEGER, "
+                "PRIMARY KEY(order_id, book_id)"
+                ");"
+            )
+
+            cursor.execute(
                 "CREATE TABLE IF NOT EXISTS new_order( "
                 "order_id VARCHAR(200) PRIMARY KEY, "
                 "user_id VARCHAR(200), "
@@ -54,6 +63,7 @@ class Store:
                 "order_time DATETIME, "
                 "state ENUM('dont', 'doing', 'done'), "
                 "message TEXT, "
+                "FOREIGN KEY(order_id) REFERENCES new_order_detail(order_id) ON DELETE CASCADE ON UPDATE CASCADE, "
                 "FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE ON UPDATE CASCADE, "
                 "FOREIGN KEY(store_id) REFERENCES user_store(store_id) ON DELETE CASCADE ON UPDATE CASCADE"
                 ");"
@@ -63,17 +73,6 @@ class Store:
                 "CREATE TABLE IF NOT EXISTS unpay_order("
                 "order_id VARCHAR(200), "
                 "order_time DATETIME"
-                ");"
-            )
-
-            cursor.execute(
-                "CREATE TABLE IF NOT EXISTS new_order_detail( "
-                "order_id VARCHAR(200), "
-                "book_id VARCHAR(200), "
-                "count INTEGER, "
-                "price INTEGER, "
-                "PRIMARY KEY(order_id, book_id), "
-                "FOREIGN KEY(order_id) REFERENCES new_order(order_id) ON DELETE CASCADE ON UPDATE CASCADE"
                 ");"
             )
 
@@ -91,7 +90,7 @@ class Store:
             )
 
             db.commit()
-        except sqlite.Error as e:
+        except pymysql.Error as e:
             logging.error(e)
             db.rollback()
 
