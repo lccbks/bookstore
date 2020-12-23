@@ -14,10 +14,12 @@ class TestRegister:
         self.auth = auth.Auth(conf.URL)
         yield
 
+    @pytest.mark.run(order=1)
     def test_register_ok(self):
         code = self.auth.register(self.user_id, self.password)
         assert code == 200
 
+    @pytest.mark.run(order=2)
     def test_unregister_ok(self):
         code = self.auth.register(self.user_id, self.password)
         assert code == 200
@@ -25,6 +27,7 @@ class TestRegister:
         code = self.auth.unregister(self.user_id, self.password)
         assert code == 200
 
+    @pytest.mark.run(order=3)
     def test_unregister_error_authorization(self):
         code = self.auth.register(self.user_id, self.password)
         assert code == 200
@@ -35,6 +38,7 @@ class TestRegister:
         code = self.auth.unregister(self.user_id, self.password + "_x")
         assert code != 200
 
+    @pytest.mark.run(order=4)
     def test_register_error_exist_user_id(self):
         code = self.auth.register(self.user_id, self.password)
         assert code == 200

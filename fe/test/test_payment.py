@@ -41,12 +41,14 @@ class TestPayment:
                 self.total_price = self.total_price + book.price * num
         yield
 
+    @pytest.mark.run(order=26)
     def test_ok(self):
         code = self.buyer.add_funds(self.total_price)
         assert code == 200
         code = self.buyer.payment(self.order_id)
         assert code == 200
 
+    @pytest.mark.run(order=27)
     def test_authorization_error(self):
         code = self.buyer.add_funds(self.total_price)
         assert code == 200
@@ -54,12 +56,14 @@ class TestPayment:
         code = self.buyer.payment(self.order_id)
         assert code != 200
 
+    @pytest.mark.run(order=28)
     def test_not_suff_funds(self):
         code = self.buyer.add_funds(self.total_price - 1)
         assert code == 200
         code = self.buyer.payment(self.order_id)
         assert code != 200
 
+    @pytest.mark.run(order=29)
     def test_repeat_pay(self):
         code = self.buyer.add_funds(self.total_price)
         assert code == 200

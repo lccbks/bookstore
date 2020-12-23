@@ -1,4 +1,3 @@
-import sqlite3 as sqlite
 import pymysql
 import uuid
 import json
@@ -111,14 +110,12 @@ class Buyer(db_conn.DBConn):
             if balance < total_price:
                 return error.error_not_sufficient_funds(order_id)
 
-            self.cursor.execute("UPDATE user set balance = balance - %s"
-                                  "WHERE user_id = %s AND balance >= %s",
+            self.cursor.execute("UPDATE user set balance = balance - %s WHERE user_id = %s AND balance >= %s",
                                   (total_price, buyer_id, total_price))
             if self.cursor.rowcount == 0:
                 return error.error_not_sufficient_funds(order_id)
 
-            self.cursor.execute("UPDATE user set balance = balance + %s"
-                                  "WHERE user_id = %s",
+            self.cursor.execute("UPDATE user set balance = balance + %s WHERE user_id = %s",
                                   (total_price, buyer_id))
 
             if self.cursor.rowcount == 0:
@@ -135,6 +132,7 @@ class Buyer(db_conn.DBConn):
             conn.commit()
 
         except pymysql.Error as e:
+            print(str(a))
             return 528, "{}".format(str(e))
 
         except BaseException as e:
@@ -144,7 +142,7 @@ class Buyer(db_conn.DBConn):
 
     def add_funds(self, user_id, password, add_value) -> (int, str):
         try:
-            self.cursor.eself.cursor.xecute("SELECT password  from user where user_id=%s", (user_id,))
+            self.cursor.execute("SELECT password  from user where user_id=%s", (user_id,))
             row = self.cursor.fetchone()
             if row is None:
                 return error.error_authorization_fail()

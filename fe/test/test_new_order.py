@@ -16,24 +16,28 @@ class TestNewOrder:
         self.gen_book = GenBook(self.seller_id, self.store_id)
         yield
 
+    @pytest.mark.run(order=21)
     def test_non_exist_book_id(self):
         ok, buy_book_id_list = self.gen_book.gen(non_exist_book_id=True, low_stock_level=False)
         assert ok
         code, _ = self.buyer.new_order(self.store_id, buy_book_id_list)
         assert code != 200
 
+    @pytest.mark.run(order=22)
     def test_low_stock_level(self):
         ok, buy_book_id_list = self.gen_book.gen(non_exist_book_id=False, low_stock_level=True)
         assert ok
         code, _ = self.buyer.new_order(self.store_id, buy_book_id_list)
         assert code != 200
 
+    @pytest.mark.run(order=23)
     def test_ok(self):
         ok, buy_book_id_list = self.gen_book.gen(non_exist_book_id=False, low_stock_level=False)
         assert ok
         code, _ = self.buyer.new_order(self.store_id, buy_book_id_list)
         assert code == 200
 
+    @pytest.mark.run(order=24)
     def test_non_exist_user_id(self):
         ok, buy_book_id_list = self.gen_book.gen(non_exist_book_id=False, low_stock_level=False)
         assert ok
@@ -41,6 +45,7 @@ class TestNewOrder:
         code, _ = self.buyer.new_order(self.store_id, buy_book_id_list)
         assert code != 200
 
+    @pytest.mark.run(order=25)
     def test_non_exist_store_id(self):
         ok, buy_book_id_list = self.gen_book.gen(non_exist_book_id=False, low_stock_level=False)
         assert ok

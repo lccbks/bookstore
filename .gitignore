@@ -5,7 +5,7 @@
 /fe/access/__pycache__
 /fe/bench/__pycache__
 /fe/test/__pycache__
-/htmlcov
+#/htmlcov
 /.idea
 /.pytest_cache
 /app.log

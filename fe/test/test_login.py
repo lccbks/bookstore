@@ -17,6 +17,7 @@ class TestLogin:
         assert self.auth.register(self.user_id, self.password) == 200
         yield
 
+    @pytest.mark.run(order=5)
     def test_ok(self):
         code, token = self.auth.login(self.user_id, self.password, self.terminal)
         assert code == 200
@@ -30,10 +31,12 @@ class TestLogin:
         code = self.auth.logout(self.user_id, token)
         assert code == 200
 
+    @pytest.mark.run(order=6)
     def test_error_user_id(self):
         code, token = self.auth.login(self.user_id + "_x", self.password, self.terminal)
         assert code == 401
 
+    @pytest.mark.run(order=7)
     def test_error_password(self):
         code, token = self.auth.login(self.user_id, self.password + "_x", self.terminal)
         assert code == 401

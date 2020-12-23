@@ -22,17 +22,20 @@ class TestAddBook:
         yield
         # do after test
 
+    @pytest.mark.run(order=13)
     def test_ok(self):
         for b in self.books:
             code = self.seller.add_book(self.store_id, 0, b)
             assert code == 200
 
+    @pytest.mark.run(order=14)
     def test_error_non_exist_store_id(self):
         for b in self.books:
             # non exist store id
             code = self.seller.add_book(self.store_id + "x", 0, b)
             assert code != 200
 
+    @pytest.mark.run(order=15)
     def test_error_exist_book_id(self):
         for b in self.books:
             code = self.seller.add_book(self.store_id, 0, b)
@@ -42,6 +45,7 @@ class TestAddBook:
             code = self.seller.add_book(self.store_id, 0, b)
             assert code != 200
 
+    @pytest.mark.run(order=16)
     def test_error_non_exist_user_id(self):
         for b in self.books:
             # non exist user id
