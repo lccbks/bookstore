@@ -211,3 +211,403 @@ Body:
 变量名 | 类型 | 描述 | 是否可为空
 ---|---|---|---
 message | string | 返回错误消息，成功时为"ok" | N
+
+## 查询：作者名
+
+#### URL：
+
+POST http://$address$/auth/search_author
+
+#### Request
+
+Headers:
+
+| key   | 类型   | 描述      |
+| ----- | ------ | --------- |
+| token | string | 访问token |
+
+Body:
+
+```
+{
+    "author":"$search name$"
+    "page":"$page num$"
+}
+```
+
+| 变量名  | 类型   | 描述   | 是否可为空 |
+| ------- | ------ | ------ | ---------- |
+| user_id | string | 作者名 | N          |
+| page    | int    | 页码   | N          |
+
+#### Response
+
+Status Code:
+
+| 码   | 描述                        |
+| ---- | --------------------------- |
+| 200  | 查询成功                    |
+| 401  | 查询失败，用户名或token错误 |
+
+Body:
+
+```
+{
+    "message":"$error message$"
+}
+```
+
+| 变量名  | 类型   | 描述                       | 是否可为空 |
+| ------- | ------ | -------------------------- | ---------: |
+| message | string | 返回错误消息，成功时为"ok" |          N |
+
+## 查询：内容
+
+#### URL：
+
+POST http://$address$/auth/search_book_intro
+
+#### Request
+
+Headers:
+
+| key   | 类型   | 描述      |
+| ----- | ------ | --------- |
+| token | string | 访问token |
+
+Body:
+
+```
+{
+    "book_intro":"$search name$"
+    "page":"$page num$"
+}
+```
+
+| 变量名     | 类型   | 描述     | 是否可为空 |
+| ---------- | ------ | -------- | ---------- |
+| book_intro | string | 书的内容 | N          |
+| page       | int    | 页码     | N          |
+
+#### Response
+
+Status Code:
+
+| 码   | 描述                        |
+| ---- | --------------------------- |
+| 200  | 查询成功                    |
+| 401  | 查询失败，用户名或token错误 |
+
+Body:
+
+```
+{
+    "message":"$error message$"
+}
+```
+
+| 变量名  | 类型   | 描述                       | 是否可为空 |
+| ------- | ------ | -------------------------- | ---------: |
+| message | string | 返回错误消息，成功时为"ok" |          N |
+
+## 查询：标签
+
+#### URL：
+
+POST http://$address$/auth/search_tags
+
+#### Request
+
+Headers:
+
+| key   | 类型   | 描述      |
+| ----- | ------ | --------- |
+| token | string | 访问token |
+
+Body:
+
+```
+{
+    "tags":"$search name$"
+    "page":"$page num$"
+}
+```
+
+| 变量名 | 类型   | 描述 | 是否可为空 |
+| ------ | ------ | ---- | ---------- |
+| tags   | string | 标签 | N          |
+| page   | int    | 页码 | N          |
+
+#### Response
+
+Status Code:
+
+| 码   | 描述                        |
+| ---- | --------------------------- |
+| 200  | 查询成功                    |
+| 401  | 查询失败，用户名或token错误 |
+
+Body:
+
+```
+{
+    "message":"$error message$"
+}
+```
+
+| 变量名  | 类型   | 描述                       | 是否可为空 |
+| ------- | ------ | -------------------------- | ---------: |
+| message | string | 返回错误消息，成功时为"ok" |          N |
+
+## 查询：题目
+
+#### URL：
+
+POST http://$address$/auth/title
+
+#### Request
+
+Headers:
+
+| key   | 类型   | 描述      |
+| ----- | ------ | --------- |
+| token | string | 访问token |
+
+Body:
+
+```
+{
+    "title":"$search name$"
+    "page":"$page num$"
+}
+```
+
+| 变量名 | 类型   | 描述 | 是否可为空 |
+| ------ | ------ | ---- | ---------- |
+| title  | string | 标题 | N          |
+| page   | int    | 页码 | N          |
+
+#### Response
+
+Status Code:
+
+| 码   | 描述                        |
+| ---- | --------------------------- |
+| 200  | 查询成功                    |
+| 401  | 查询失败，用户名或token错误 |
+
+Body:
+
+```
+{
+    "message":"$error message$"
+}
+```
+
+| 变量名  | 类型   | 描述                       | 是否可为空 |
+| ------- | ------ | -------------------------- | ---------: |
+| message | string | 返回错误消息，成功时为"ok" |          N |
+
+## 商铺查询：作者名
+
+#### URL：
+
+POST http://$address$/auth/search_author_in_store
+
+#### Request
+
+Headers:
+
+| key   | 类型   | 描述      |
+| ----- | ------ | --------- |
+| token | string | 访问token |
+
+Body:
+
+```
+{
+    "author":"$search name$"
+    "store_id":"$store name$"
+    "page":"$page num$"
+}
+```
+
+| 变量名   | 类型   | 描述   | 是否可为空 |
+| -------- | ------ | ------ | ---------- |
+| author   | string | 作者名 | N          |
+| store_id | string | 商店   | N          |
+| page     | int    | 页码   | N          |
+
+#### Response
+
+Status Code:
+
+| 码   | 描述                        |
+| ---- | --------------------------- |
+| 200  | 查询成功                    |
+| 401  | 查询失败，用户名或token错误 |
+
+Body:
+
+```
+{
+    "message":"$error message$"
+}
+```
+
+| 变量名  | 类型   | 描述                       | 是否可为空 |
+| ------- | ------ | -------------------------- | ---------: |
+| message | string | 返回错误消息，成功时为"ok" |          N |
+
+## 商铺查询：内容
+
+#### URL：
+
+POST http://$address$/auth/search_book_intro_in_store
+
+#### Request
+
+Headers:
+
+| key   | 类型   | 描述      |
+| ----- | ------ | --------- |
+| token | string | 访问token |
+
+Body:
+
+```
+{
+    "book_intro":"$search name$"
+    "store_id":"$store name$"
+    "page":"$page num$"
+}
+```
+
+| 变量名     | 类型   | 描述     | 是否可为空 |
+| ---------- | ------ | -------- | ---------- |
+| book_intro | string | 书的内容 | N          |
+| store_id   | string | 商店     | N          |
+| page       | int    | 页码     | N          |
+
+#### Response
+
+Status Code:
+
+| 码   | 描述                        |
+| ---- | --------------------------- |
+| 200  | 查询成功                    |
+| 401  | 查询失败，用户名或token错误 |
+
+Body:
+
+```
+{
+    "message":"$error message$"
+}
+```
+
+| 变量名  | 类型   | 描述                       | 是否可为空 |
+| ------- | ------ | -------------------------- | ---------: |
+| message | string | 返回错误消息，成功时为"ok" |          N |
+
+## 商铺查询：标签
+
+#### URL：
+
+POST http://$address$/auth/search_tags_in_store
+
+#### Request
+
+Headers:
+
+| key   | 类型   | 描述      |
+| ----- | ------ | --------- |
+| token | string | 访问token |
+
+Body:
+
+```
+{
+    "tags":"$search name$"
+    "store_id":"$store name$"
+    "page":"$page num$"
+}
+```
+
+| 变量名   | 类型   | 描述 | 是否可为空 |
+| -------- | ------ | ---- | ---------- |
+| tags     | string | 标签 | N          |
+| store_id | string | 商店 | N          |
+| page     | int    | 页码 | N          |
+
+#### Response
+
+Status Code:
+
+| 码   | 描述                        |
+| ---- | --------------------------- |
+| 200  | 查询成功                    |
+| 401  | 查询失败，用户名或token错误 |
+
+Body:
+
+```
+{
+    "message":"$error message$"
+}
+```
+
+| 变量名  | 类型   | 描述                       | 是否可为空 |
+| ------- | ------ | -------------------------- | ---------: |
+| message | string | 返回错误消息，成功时为"ok" |          N |
+
+## 商铺查询：题目
+
+#### URL：
+
+POST http://$address$/auth/search_title_in_store
+
+#### Request
+
+Headers:
+
+| key   | 类型   | 描述      |
+| ----- | ------ | --------- |
+| token | string | 访问token |
+
+Body:
+
+```
+{
+    "title":"$search name$"
+    "store_id":"$store name$"
+    "page":"$page num$"
+}
+```
+
+| 变量名   | 类型   | 描述 | 是否可为空 |
+| -------- | ------ | ---- | ---------- |
+| title    | string | 题目 | N          |
+| store_id | string | 商店 | N          |
+| page     | int    | 页码 | N          |
+
+#### Response
+
+Status Code:
+
+| 码   | 描述                        |
+| ---- | --------------------------- |
+| 200  | 查询成功                    |
+| 401  | 查询失败，用户名或token错误 |
+
+Body:
+
+```
+{
+    "message":"$error message$"
+}
+```
+
+| 变量名  | 类型   | 描述                       | 是否可为空 |
+| ------- | ------ | -------------------------- | ---------: |
+| message | string | 返回错误消息，成功时为"ok" |          N |
