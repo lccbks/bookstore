@@ -14,13 +14,14 @@ class Buyer(db_conn.DBConn):
         self.cursor = self.conn.cursor()
 
     ''' 增加新订单 '''
+
     def new_order(self, user_id: str, store_id: str, id_and_count: [(str, int)]) -> (int, str, str):
         order_id = ""
         try:
             if not self.user_id_exist(user_id):
-                return error.error_non_exist_user_id(user_id) + (order_id, )
+                return error.error_non_exist_user_id(user_id) + (order_id,)
             if not self.store_id_exist(store_id):
-                return error.error_non_exist_store_id(store_id) + (order_id, )
+                return error.error_non_exist_store_id(store_id) + (order_id,)
             uid = "{}_{}_{}".format(user_id, store_id, str(uuid.uuid1()))
 
             for book_id, count in id_and_count:
@@ -30,7 +31,7 @@ class Buyer(db_conn.DBConn):
                     (store_id, book_id))
                 row = self.cursor.fetchone()
                 if row is None:
-                    return error.error_non_exist_book_id(book_id) + (order_id, )
+                    return error.error_non_exist_book_id(book_id) + (order_id,)
 
                 stock_level = row[1]
                 book_info = row[2]
@@ -45,12 +46,12 @@ class Buyer(db_conn.DBConn):
                     "WHERE store_id = %s and book_id = %s and stock_level >= %s; ",
                     (count, store_id, book_id, count))
                 if self.cursor.rowcount == 0:
-                    return error.error_stock_level_low(book_id) + (order_id, )
+                    return error.error_stock_level_low(book_id) + (order_id,)
 
                 self.cursor.execute(
-                        "INSERT INTO new_order_detail(order_id, book_id, count, price) "
-                        "VALUES(%s, %s, %s, %s);",
-                        (uid, book_id, count, price))
+                    "INSERT INTO new_order_detail(order_id, book_id, count, price) "
+                    "VALUES(%s, %s, %s, %s);",
+                    (uid, book_id, count, price))
 
             self.cursor.execute(
                 "INSERT INTO new_order(order_id, store_id, user_id) "
@@ -111,28 +112,28 @@ class Buyer(db_conn.DBConn):
                 return error.error_not_sufficient_funds(order_id)
 
             self.cursor.execute("UPDATE user set balance = balance - %s WHERE user_id = %s AND balance >= %s",
-                                  (total_price, buyer_id, total_price))
+                                (total_price, buyer_id, total_price))
             if self.cursor.rowcount == 0:
                 return error.error_not_sufficient_funds(order_id)
 
             self.cursor.execute("UPDATE user set balance = balance + %s WHERE user_id = %s",
-                                  (total_price, buyer_id))
+                                (total_price, buyer_id))
 
             if self.cursor.rowcount == 0:
                 return error.error_non_exist_user_id(buyer_id)
 
-            self.cursor.execute("DELETE FROM new_order WHERE order_id = %s", (order_id, ))
+            self.cursor.execute("DELETE FROM new_order WHERE order_id = %s", (order_id,))
             if self.cursor.rowcount == 0:
                 return error.error_invalid_order_id(order_id)
 
-            self.cursor.execute("DELETE FROM new_order_detail where order_id = %s", (order_id, ))
+            self.cursor.execute("DELETE FROM new_order_detail where order_id = %s", (order_id,))
             if self.cursor.rowcount == 0:
                 return error.error_invalid_order_id(order_id)
 
             conn.commit()
 
         except pymysql.Error as e:
-            print(str(a))
+            print(str(e))
             return 528, "{}".format(str(e))
 
         except BaseException as e:
@@ -159,6 +160,73 @@ class Buyer(db_conn.DBConn):
             self.conn.commit()
         except pymysql.Error as e:
             return 528, "{}".format(str(e))
+        except BaseException as e:
+            return 530, "{}".format(str(e))
+
+        return 200, "ok"
+
+    def confirm_receipt(self, user_id: str, order_id: str) -> (int, str):
+        try:
+            if not self.user_id_exist(user_id):
+                return error.error_non_exist_user_id(user_id)
+            if not self.order_id_exist(order_id):
+                return error.error_non_exist_order_id(order_id)
+            self.cursor.execute("SELECT state FROM new_order "
+                                "WHERE order_id = %s",
+                                order_id)
+            row = self.cursor.fetchone()
+            if row[0] != 'delivering':
+                return error.error_order_state(order_id)
+            self.cursor.execute("UPDATE new_order SET state = 'done' "
+                                "WHERE order_id = %s",
+                                order_id)
+            self.conn.commit()
+        except pymysql.Error as e:
+            return 528, "{}".format(str(e))
+        except BaseException as e:
+            return 530, "{}".format(str(e))
+        return 200, "ok"
+
+    def query_order_state(self, user_id: str, order_id: str) -> (int, str):
+        try:
+            if not self.user_id_exist(user_id):
+                return error.error_non_exist_user_id(user_id)
+            if not self.order_id_exist(order_id):
+                return error.error_non_exist_order_id(order_id)
+            self.cursor.execute("SELECT state FROM new_order "
+                                "WHERE order_id = %s",
+                                order_id)
+            row = self.cursor.fetchone()
+            state = row[0]
+        except pymysql.Error as e:
+            print(str(e))
+            return 528, "{}".format(str(e))
+
+        except BaseException as e:
+            return 530, "{}".format(str(e))
+
+        return 200, "ok", state
+
+    def cancel_order(self, user_id: str, order_id: str) -> (int, str):
+        try:
+            if not self.user_id_exist(user_id):
+                return error.error_non_exist_user_id(user_id)
+            if not self.order_id_exist(order_id):
+                return error.error_non_exist_order_id(order_id)
+            self.cursor.execute("SELECT state FROM new_order "
+                                "WHERE order_id = %s",
+                                order_id)
+            row = self.cursor.fetchone()
+            if row[0] == 'done' or row[0] == 'canceled':
+                return error.error_order_state(order_id)
+            self.cursor.execute("UPDATE new_order SET state = 'canceled' "
+                                "WHERE order_id = %s",
+                                order_id)
+            self.conn.commit()
+        except pymysql.Error as e:
+            print(str(e))
+            return 528, "{}".format(str(e))
+
         except BaseException as e:
             return 530, "{}".format(str(e))
 
