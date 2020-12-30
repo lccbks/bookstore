@@ -17,6 +17,7 @@ before_script:
   - sudo systemctl restart mysql
   - sudo mysql_upgrade
   - echo "USE mysql;\nUPDATE user SET password=PASSWORD('123456') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root < bookstore.sql
+  - echo "use mysql;\nshow databases;\n"
   - sudo service mysql restart
 
 # Install the codecov pip dependency
