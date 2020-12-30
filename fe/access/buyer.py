@@ -64,9 +64,10 @@ class Buyer:
         response_json = r.json()
         return r.status_code, response_json.get("state")
 
-    def cancel_order(self, order_id: str) -> int:
+    def cancel_order(self, password: str, order_id: str) -> int:
         json = {
             "user_id": self.user_id,
+            "password": password,
             "order_id": order_id
         }
         url = urljoin(self.url_prefix, "cancel_order")

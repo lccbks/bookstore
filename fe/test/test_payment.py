@@ -55,6 +55,9 @@ class TestPayment:
         self.buyer.password = self.buyer.password + "_x"
         code = self.buyer.payment(self.order_id)
         assert code != 200
+        self.buyer.user_id = self.buyer.user_id + "_x"
+        code = self.buyer.payment(self.order_id)
+        assert code != 200
 
     @pytest.mark.run(order=28)
     def test_not_suff_funds(self):

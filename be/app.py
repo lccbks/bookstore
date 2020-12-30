@@ -1,3 +1,5 @@
+import sys
+sys.path.append('../')
 from be import serve
 
 if __name__ == "__main__":

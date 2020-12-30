@@ -172,96 +172,58 @@ class User(db_conn.DBConn):
             return 530, "{}".format(str(e))
         return 200, "ok"
 
-    def search_author(self, author: str, page: str) -> (int, [dict]):
+    def search_author(self, author: str, page: str) -> int:
         self.cursor.execute(
-            "SELECT title, book.author, publisher, book_intro, tags, picture "
-            "FROM book WHERE book_id in "
-            "(select book_id from search_author where author='%s' and search_id BETWEEN %d and %d)" % (
+            "select book_id from search_author where author='%s' and search_id BETWEEN %d and %d" % (
                 author, 10 * int(page) - 10, 10 * int(page) - 1))
-        return self.search_records(author, 1)
+        return 200
 
-    def search_book_intro(self, book_intro: str, page: int) -> (int, [dict]):
+    def search_book_intro(self, book_intro: str, page: int) -> int:
         self.cursor.execute(
-            "SELECT title, book.author, publisher, book_intro, tags, picture "
-            "FROM book WHERE book_id in "
-            "(select book_id from search_book_intro where book_intro='%s' and search_id BETWEEN %d and %d)" % (
+            "select book_id from search_book_intro where book_intro='%s' and search_id BETWEEN %d and %d" % (
                 book_intro, 10 * page - 10, 10 * page - 1))
-        return self.search_records(book_intro, 3)
+        return 200
 
-    def search_tags(self, tags: str, page: int) -> (int, [dict]):
+    def search_tags(self, tags: str, page: int) -> int:
         self.cursor.execute(
-            "SELECT title, book.author, publisher, book_intro, tags, picture "
-            "FROM book WHERE book_id in "
-            "(select book_id from search_tags where tags='%s' and search_id BETWEEN %d and %d)" % (
+            "select book_id from search_tags where tags='%s' and search_id BETWEEN %d and %d" % (
                 tags, 10 * page - 10, 10 * page - 1))
-        return self.search_records(tags, 4)
+        return 200
 
-    def search_title(self, title: str, page: int) -> (int, [dict]):
+    def search_title(self, title: str, page: int) -> int:
         self.cursor.execute(
-            "SELECT title, book.author, publisher, book_intro, tags, picture "
-            "FROM book WHERE book_id in "
-            "(select book_id from search_title where title='%s' and search_id BETWEEN %d and %d)" % (
+            "select book_id from search_title where title='%s' and search_id BETWEEN %d and %d" % (
                 title, 10 * page - 10, 10 * page - 1))
-        return self.search_records(title, 0)
+        return 200
 
-    def search_author_in_store(self, author: str, store_id: str, page: int) -> (int, [dict]):
+    def search_author_in_store(self, author: str, store_id: str, page: int) -> int:
         self.cursor.execute(
-            "SELECT title, book.author, publisher, book_intro, tags, picture "
-            "FROM book WHERE book_id in "
-            "(select book_id from search_author where author='%s') and "
+            "select book_id from search_author where author='%s' and "
             "book_id in (select book_id from store where store_id='%s')"
             "LIMIT 10 OFFSET %d" % (
                 author, store_id, 10 * page - 10))
-        return self.search_records(author, 1)
+        return 200
 
-    def search_book_intro_in_store(self, book_intro: str, store_id: str, page: int) -> (int, [dict]):
+    def search_book_intro_in_store(self, book_intro: str, store_id: str, page: int) -> int:
         self.cursor.execute(
-            "SELECT title, book.author, publisher, book_intro, tags, picture "
-            "FROM book WHERE book_id in "
-            "(select book_id from search_book_intro where book_intro='%s') and "
+            "select book_id from search_book_intro where book_intro='%s' and "
             "book_id in (select book_id from store where store_id='%s')"
             "LIMIT 10 OFFSET %d" % (
                 book_intro, store_id, 10 * page - 10))
-        return self.search_records(book_intro, 3)
+        return 200
 
-    def search_tags_in_store(self, tags: str, store_id: str, page: int) -> (int, [dict]):
+    def search_tags_in_store(self, tags: str, store_id: str, page: int) -> int:
         self.cursor.execute(
-            "SELECT title, book.author, publisher, book_intro, tags, picture "
-            "FROM book WHERE book_id in "
-            "(select book_id from search_tags where tags='%s') and "
+            "select book_id from search_tags where tags='%s' and "
             "book_id in (select book_id from store where store_id='%s')"
             "LIMIT 10 OFFSET %d" % (
                 tags, store_id, 10 * page - 10))
-        return self.search_records(tags, 4)
+        return 200
 
-    def search_title_in_store(self, title: str, store_id: str, page: int) -> (int, [dict]):
+    def search_title_in_store(self, title: str, store_id: str, page: int) -> int:
         self.cursor.execute(
-            "SELECT title, book.author, publisher, book_intro, tags, picture "
-            "FROM book WHERE book_id in "
-            "(select book_id from search_title where title='%s') and "
+            "select book_id from search_title where title='%s' and "
             "book_id in (select book_id from store where store_id='%s')"
             "LIMIT 10 OFFSET %d" % (
                 title, store_id, 10 * page - 10))
-        return self.search_records(title, 0)
-
-    def search_records(self, var, index):
-        result = []
-        information = self.cursor.fetchall()
-        if len(information) != 0:
-            for i in range(len(information)):
-                record = information[i]
-                title, author, publisher, book_intro, tags, picture = record[0] if index != 0 else var, record[
-                    1] if index != 1 else var, record[2], record[3] if index != 3 else var, record[
-                                                                          4] if index != 4 else var, record[5]
-                if picture is not None:
-                    result.append(
-                        {'title': title, 'author': author, 'publisher': publisher,
-                         'book_intro': book_intro,
-                         'tags': tags, 'picture': base64.b64encode(picture).decode('utf-8')})
-                else:
-                    result.append(
-                        {'title': title, 'author': author, 'publisher': publisher,
-                         'book_intro': book_intro, 'tags': tags})
-            return 200, result
-        else:
-            return 200, []
+        return 200

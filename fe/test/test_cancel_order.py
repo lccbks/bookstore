@@ -37,40 +37,50 @@ class TestCancelOrder:
         self.seller = s
         yield
 
+    @pytest.mark.run(order=39)
     def test_ok(self):
         code, state = self.buyer.query_order_state(self.order_id)
         assert code == 200
         assert state == "unpaid"
-        code = self.buyer.cancel_order(self.order_id)
+        code = self.buyer.cancel_order(self.password, self.order_id)
         assert code == 200
         code, state = self.buyer.query_order_state(self.order_id)
         assert code == 200
-        assert state == "canceled"
+        assert state == "cancelled"
 
+    @pytest.mark.run(order=40)
     def test_cancel_twice(self):
         code, state = self.buyer.query_order_state(self.order_id)
         assert code == 200
         assert state == "unpaid"
-        code = self.buyer.cancel_order(self.order_id)
+        code = self.buyer.cancel_order(self.password, self.order_id)
         assert code == 200
         code, state = self.buyer.query_order_state(self.order_id)
         assert code == 200
-        assert state == "canceled"
-        code = self.buyer.cancel_order(self.order_id)
+        assert state == "cancelled"
+        code = self.buyer.cancel_order(self.password, self.order_id)
         assert code != 200
 
+    @pytest.mark.run(order=41)
+    def test_authorization_error(self):
+        self.password = self.password + "_x"
+        code = self.buyer.cancel_order(self.password, self.order_id)
+        assert code != 200
+
+    @pytest.mark.run(order=42)
     def test_non_exist_user_id(self):
         self.buyer.user_id = self.buyer.user_id + "_x"
         code, state = self.buyer.query_order_state(self.order_id)
         assert code != 200
         assert state != "unpaid"
-        code = self.buyer.cancel_order(self.order_id)
+        code = self.buyer.cancel_order(self.password, self.order_id)
         assert code != 200
 
+    @pytest.mark.run(order=43)
     def test_non_exist_order_id(self):
         self.order_id = self.order_id + "_x"
         code, state = self.buyer.query_order_state(self.order_id)
         assert code != 200
         assert state != "unpaid"
-        code = self.buyer.cancel_order(self.order_id)
+        code = self.buyer.cancel_order(self.password, self.order_id)
         assert code != 200

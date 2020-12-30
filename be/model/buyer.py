@@ -29,8 +29,6 @@ class Buyer(db_conn.DBConn):
             self.cursor.execute("select @_new_order_6,@_new_order_7")
             return_value = self.cursor.fetchone()
             # print(return_value)
-            if return_value[0] is None:
-                return 532, 'None', 'None'
             if return_value[0] == 0:
                 return 200, "ok", order_id
             if return_value[0] == 1:
@@ -110,24 +108,14 @@ class Buyer(db_conn.DBConn):
             self.conn.commit()
             self.cursor.execute("select @_payment_3,@_payment_4")
             return_value = self.cursor.fetchone()
-            print(return_value)
-            if return_value[0] is None:
-                return 532, 'None'
+            # print(return_value)
             if return_value[0] == 0:
                 return 200, "ok"
-            if return_value[0] == 1:
+            if return_value[0] in [1, 5, 9]:
                 return error.error_invalid_order_id(return_value[1])
-            if return_value[0] == 9:
-                return error.error_invalid_order_id(return_value[1])
-            if return_value[0] == 2:
+            if return_value[0] == 2 or return_value[0] == 4:
                 return error.error_authorization_fail()
-            if return_value[0] == 3:
-                return error.error_non_exist_user_id(return_value[1])
-            if return_value[0] == 4:
-                return error.error_authorization_fail()
-            if return_value[0] == 5:
-                return error.error_non_exist_store_id(return_value[1])
-            if return_value[0] == 6:
+            if return_value[0] == 3 or return_value[0] == 6:
                 return error.error_non_exist_user_id(return_value[1])
             if return_value[0] == 7:
                 return error.error_not_sufficient_funds(return_value[1])
@@ -270,7 +258,7 @@ class Buyer(db_conn.DBConn):
             row = self.cursor.fetchone()
             state = row[0]
         except pymysql.Error as e:
-            print(str(e))
+            # print(str(e))
             return 528, "{}".format(str(e)), "null"
 
         except BaseException as e:
@@ -278,24 +266,25 @@ class Buyer(db_conn.DBConn):
 
         return 200, "ok", state
 
-    def cancel_order(self, user_id: str, order_id: str) -> (int, str):
+    def cancel_order(self, user_id: str, password: str, order_id: str) -> (int, str):
         try:
-            if not self.user_id_exist(user_id):
-                return error.error_non_exist_user_id(user_id)
-            if not self.order_id_exist(order_id):
-                return error.error_non_exist_order_id(order_id)
-            self.cursor.execute("SELECT state FROM new_order "
-                                "WHERE order_id = %s",
-                                order_id)
-            row = self.cursor.fetchone()
-            if row[0] == 'done' or row[0] == 'canceled':
-                return error.error_order_state(order_id)
-            self.cursor.execute("UPDATE new_order SET state = 'canceled' "
-                                "WHERE order_id = %s",
-                                order_id)
+            self.cursor.callproc('man_cancel', (user_id, password, order_id, 'flag', 'msg'))
             self.conn.commit()
+            self.cursor.execute("select @_man_cancel_3,@_man_cancel_4")
+            return_value = self.cursor.fetchone()
+            # print(return_value)
+            if return_value[0] == 0:
+                return 200, "ok"
+            if return_value[0] == 1:
+                return error.error_non_exist_user_id(return_value[1])
+            if return_value[0] == 2:
+                return error.error_authorization_fail()
+            if return_value[0] in [3, 4, 5, 6]:
+                return error.error_invalid_order_id(order_id)
+            if return_value[0] == 7:
+                return 528, "{}".format(return_value[1])
         except pymysql.Error as e:
-            print(str(e))
+            # print(str(e))
             return 528, "{}".format(str(e))
 
         except BaseException as e:

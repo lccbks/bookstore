@@ -1,3 +1,6 @@
+import sys
+sys.path.append('../')
+sys.path.append('../../')
 from fe.bench.workload import Workload
 from fe.bench.session import Session
 

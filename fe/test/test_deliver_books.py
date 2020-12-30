@@ -39,16 +39,19 @@ class TestDeliverBooks:
         self.seller = s
         yield
 
+    @pytest.mark.run(order=33)
     def test_ok(self):
         code = self.buyer.payment(self.order_id)
         assert code == 200
         code = self.seller.deliver_books(self.store_id, self.order_id)
         assert code == 200
 
+    @pytest.mark.run(order=34)
     def test_unpaid_order(self):
         code = self.seller.deliver_books(self.store_id, self.order_id)
         assert code != 200
 
+    @pytest.mark.run(order=35)
     def test_deliver_twice(self):
         code = self.buyer.payment(self.order_id)
         assert code == 200
@@ -57,12 +60,14 @@ class TestDeliverBooks:
         code = self.seller.deliver_books(self.store_id, self.order_id)
         assert code != 200
 
+    @pytest.mark.run(order=36)
     def test_error_non_exist_store_id(self):
         code = self.buyer.payment(self.order_id)
         assert code == 200
         code = self.seller.deliver_books(self.store_id+"_x", self.order_id)
         assert code != 200
 
+    @pytest.mark.run(order=37)
     def test_error_non_exist_user_id(self):
         code = self.buyer.payment(self.order_id)
         assert code == 200
@@ -70,6 +75,7 @@ class TestDeliverBooks:
         code = self.seller.deliver_books(self.store_id, self.order_id)
         assert code != 200
 
+    @pytest.mark.run(order=38)
     def test_error_non_exist_order_id(self):
         code = self.buyer.payment(self.order_id)
         assert code == 200

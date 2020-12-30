@@ -39,16 +39,19 @@ class TestConfirmReceipt:
         assert code == 200
         yield
 
+    @pytest.mark.run(order=44)
     def test_ok(self):
         code = self.seller.deliver_books(self.store_id, self.order_id)
         assert code == 200
         code = self.buyer.confirm_receipt(self.order_id)
         assert code == 200
 
+    @pytest.mark.run(order=45)
     def test_undelivered_order(self):
         code = self.buyer.confirm_receipt(self.order_id)
         assert code != 200
 
+    @pytest.mark.run(order=46)
     def test_confirm_twice(self):
         code = self.seller.deliver_books(self.store_id, self.order_id)
         assert code == 200
@@ -57,6 +60,7 @@ class TestConfirmReceipt:
         code = self.buyer.confirm_receipt(self.order_id)
         assert code != 200
 
+    @pytest.mark.run(order=47)
     def test_error_non_exist_user(self):
         code = self.seller.deliver_books(self.store_id, self.order_id)
         assert code == 200
@@ -64,6 +68,7 @@ class TestConfirmReceipt:
         code = self.buyer.confirm_receipt(self.order_id)
         assert code != 200
 
+    @pytest.mark.run(order=48)
     def test_error_non_exist_order(self):
         code = self.seller.deliver_books(self.store_id, self.order_id)
         assert code == 200
