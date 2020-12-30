@@ -5,5 +5,9 @@ coverage
 flask
 pre-commit
 pytest
+pytest-ordering
+pymysql
 PyJWT
 requests
+sqlite3
+
