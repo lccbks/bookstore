@@ -9,5 +9,4 @@ pytest-ordering
 pymysql
 PyJWT
 requests
-sqlite3
 
