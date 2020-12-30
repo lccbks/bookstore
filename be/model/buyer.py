@@ -261,9 +261,9 @@ class Buyer(db_conn.DBConn):
     def query_order_state(self, user_id: str, order_id: str) -> (int, str):
         try:
             if not self.user_id_exist(user_id):
-                return error.error_non_exist_user_id(user_id)
+                return error.error_non_exist_user_id(user_id) + "null"
             if not self.order_id_exist(order_id):
-                return error.error_non_exist_order_id(order_id)
+                return error.error_non_exist_order_id(order_id) + "null"
             self.cursor.execute("SELECT state FROM new_order "
                                 "WHERE order_id = %s",
                                 order_id)
@@ -271,10 +271,10 @@ class Buyer(db_conn.DBConn):
             state = row[0]
         except pymysql.Error as e:
             print(str(e))
-            return 528, "{}".format(str(e))
+            return 528, "{}".format(str(e)), "null"
 
         except BaseException as e:
-            return 530, "{}".format(str(e))
+            return 530, "{}".format(str(e)), "null"
 
         return 200, "ok", state
 

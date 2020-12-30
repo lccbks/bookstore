@@ -58,7 +58,7 @@ def query_order_state():
     order_id: str = request.json.get("order_id")
     b = Buyer()
     code, message, state = b.query_order_state(user_id, order_id)
-    return jsonify({"message": message, "order_id": order_id, "state": state}), code
+    return jsonify({"message": message, "state": state}), code
 
 
 @bp_buyer.route("/cancel_order", methods=["POST"])

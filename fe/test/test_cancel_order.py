@@ -8,12 +8,12 @@ from fe.access.book import Book
 import uuid
 
 
-class TestConfirmReceipt:
+class TestCancelOrder:
     @pytest.fixture(autouse=True)
     def pre_run_initialization(self):
-        self.seller_id = "test_confirm_receipt_seller_id_{}".format(str(uuid.uuid1()))
-        self.store_id = "test_confirm_receipt_store_id_{}".format(str(uuid.uuid1()))
-        self.buyer_id = "test_confirm_receipt_buyer_id_{}".format(str(uuid.uuid1()))
+        self.seller_id = "test_cancel_order_seller_id_{}".format(str(uuid.uuid1()))
+        self.store_id = "test_cancel_order_store_id_{}".format(str(uuid.uuid1()))
+        self.buyer_id = "test_cancel_order_buyer_id_{}".format(str(uuid.uuid1()))
         self.password = self.seller_id
         gen_book = GenBook(self.seller_id, self.store_id)
         ok, buy_book_id_list = gen_book.gen(non_exist_book_id=False, low_stock_level=False, max_book_count=5)
@@ -35,38 +35,42 @@ class TestConfirmReceipt:
         assert code == 200
         s = Seller(conf.URL, self.seller_id, self.password)
         self.seller = s
-        code = self.buyer.payment(self.order_id)
-        assert code == 200
         yield
 
     def test_ok(self):
-        code = self.seller.deliver_books(self.store_id, self.order_id)
+        code, state = self.buyer.query_order_state(self.order_id)
         assert code == 200
-        code = self.buyer.confirm_receipt(self.order_id)
+        assert state == "unpaid"
+        code = self.buyer.cancel_order(self.order_id)
         assert code == 200
+        code, state = self.buyer.query_order_state(self.order_id)
+        assert code == 200
+        assert state == "canceled"
 
-    def test_undelivered_order(self):
-        code = self.buyer.confirm_receipt(self.order_id)
+    def test_cancel_twice(self):
+        code, state = self.buyer.query_order_state(self.order_id)
+        assert code == 200
+        assert state == "unpaid"
+        code = self.buyer.cancel_order(self.order_id)
+        assert code == 200
+        code, state = self.buyer.query_order_state(self.order_id)
+        assert code == 200
+        assert state == "canceled"
+        code = self.buyer.cancel_order(self.order_id)
         assert code != 200
 
-    def test_confirm_twice(self):
-        code = self.seller.deliver_books(self.store_id, self.order_id)
-        assert code == 200
-        code = self.buyer.confirm_receipt(self.order_id)
-        assert code == 200
-        code = self.buyer.confirm_receipt(self.order_id)
+    def test_non_exist_user_id(self):
+        self.buyer.user_id = self.buyer.user_id + "_x"
+        code, state = self.buyer.query_order_state(self.order_id)
+        assert code != 200
+        assert state != "unpaid"
+        code = self.buyer.cancel_order(self.order_id)
         assert code != 200
 
-    def test_error_non_exist_user(self):
-        code = self.seller.deliver_books(self.store_id, self.order_id)
-        assert code == 200
-        self.buyer.user_id = self.buyer.user_id+"_x"
-        code = self.buyer.confirm_receipt(self.order_id)
-        assert code != 200
-
-    def test_error_non_exist_order(self):
-        code = self.seller.deliver_books(self.store_id, self.order_id)
-        assert code == 200
+    def test_non_exist_order_id(self):
         self.order_id = self.order_id + "_x"
-        code = self.buyer.confirm_receipt(self.order_id)
+        code, state = self.buyer.query_order_state(self.order_id)
+        assert code != 200
+        assert state != "unpaid"
+        code = self.buyer.cancel_order(self.order_id)
         assert code != 200
