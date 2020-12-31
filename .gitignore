@@ -6,6 +6,8 @@
 /fe/bench/__pycache__
 /fe/test/__pycache__
 /.idea
+/htmlcov
+/be/model/store.py
 /.pytest_cache
 /app.log
 /.coverage
