@@ -25,6 +25,7 @@ install:
 
 # Run the unit test
 script:
+  - sbt clean coverage test
   - export PATHONPATH=`pwd`
   - coverage run --timid --branch --source fe,be --concurrency=thread -m pytest -v --ignore=fe/data
 
@@ -33,3 +34,4 @@ after_success:
   - coverage combine
   - coverage report
   - codecov
+  - sbt coveralls
