@@ -9,4 +9,5 @@ pytest-ordering
 pymysql
 PyJWT
 requests
+coveralls
 

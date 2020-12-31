@@ -33,3 +33,4 @@ after_success:
   - coverage combine
   - coverage report
   - codecov
+  - coveralls
