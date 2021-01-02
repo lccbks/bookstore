@@ -16,9 +16,8 @@ pip3 install -r requirements.txt
 # 安装 Mysql 8.0
 # 修改be/model/store.py中Store类中get_db_conn方法password字段值为Mysql数据库root用户的密码
 # 初始化数据库
-mysql -u root -p
-Enter password:******
-source <full_path>/bookstore.sql
+mysql -u root -p<your password> < create_user.sql
+mysql -u bookstore -pBookstore@2020 < bookstore.sql
 
 # 执行测试
 bash script/test.sh
