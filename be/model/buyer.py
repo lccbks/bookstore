@@ -249,9 +249,9 @@ class Buyer(db_conn.DBConn):
     def query_order_state(self, user_id: str, order_id: str) -> (int, str):
         try:
             if not self.user_id_exist(user_id):
-                return error.error_non_exist_user_id(user_id) + "null"
+                return error.error_non_exist_user_id(user_id) + ("null",)
             if not self.order_id_exist(order_id):
-                return error.error_non_exist_order_id(order_id) + "null"
+                return error.error_non_exist_order_id(order_id) + ("null",)
             self.cursor.execute("SELECT state FROM new_order "
                                 "WHERE order_id = %s",
                                 order_id)
@@ -291,3 +291,69 @@ class Buyer(db_conn.DBConn):
             return 530, "{}".format(str(e))
 
         return 200, "ok"
+
+    def add_comment(self, user_id: str, store_id: str, book_id: str, comment: str, rate: int) -> (int, str):
+        try:
+            if not self.user_id_exist(user_id):
+                return error.error_non_exist_user_id(user_id)
+            if not self.store_id_exist(store_id):
+                return error.error_non_exist_store_id(store_id)
+            self.cursor.execute("SELECT comment FROM book_comment "
+                                "WHERE store_id = %s AND book_id = %s",
+                                (store_id, book_id))
+            row = self.cursor.fetchone()
+            if row is not None:
+                return error.error_exist_comment()
+            self.cursor.execute("SELECT * FROM store "
+                                "WHERE store_id = %s AND book_id = %s",
+                                (store_id, book_id))
+            row = self.cursor.fetchone()
+            if row is None:
+                return error.error_non_exist_book_in_store(store_id)
+            self.cursor.execute("SELECT state FROM new_order, new_order_detail "
+                                "WHERE user_id = %s AND "
+                                "store_id = %s AND "
+                                "book_id = %s AND "
+                                "new_order.order_id = new_order_detail.order_id",
+                                (user_id, store_id, book_id))
+            row = self.cursor.fetchone()
+            if row is None:
+                return error.error_non_exist_order_id("null")
+            if row[0] != "done":
+                return error.error_order_state("null")
+            self.cursor.execute("INSERT INTO book_comment"
+                                "(user_id, store_id, book_id, comment, rate)"
+                                "VALUES"
+                                "(%s, %s, %s, %s, %s)",
+                                (user_id, store_id, book_id, comment, rate))
+            self.conn.commit()
+        except pymysql.Error as e:
+            return 528, "{}".format(str(e))
+        except BaseException as e:
+            return 530, "{}".format(str(e))
+        return 200, "ok"
+
+    def view_comments(self, user_id: str, store_id: str, book_id: str) -> (int, str, [str]):
+        try:
+            comments = []
+            if not self.user_id_exist(user_id):
+                return error.error_non_exist_user_id(user_id) + ("null",)
+            if not self.store_id_exist(store_id):
+                return error.error_non_exist_store_id(store_id) + ("null",)
+            self.cursor.execute("SELECT * FROM store "
+                                "WHERE store_id = %s AND book_id = %s",
+                                (store_id, book_id))
+            row = self.cursor.fetchone()
+            if row is None:
+                return error.error_non_exist_book_in_store(store_id) + ("null",)
+            self.cursor.execute("SELECT comment FROM book_comment "
+                                "WHERE store_id = %s AND book_id = %s",
+                                (store_id, book_id))
+            row = self.cursor.fetchall()
+            for i in row:
+                comments.append(i[0])
+        except pymysql.Error as e:
+            return 528, "{}".format(str(e)), "null"
+        except BaseException as e:
+            return 530, "{}".format(str(e)), "null"
+        return 200, "ok", comments

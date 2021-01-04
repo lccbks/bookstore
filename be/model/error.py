@@ -20,6 +20,8 @@ error_code = {
     528: "",
     529: "non exist order id {}",
     531: "state error, order id {}",
+    532: "non exist this book in store, store id {}",
+    533: "exist comment"
 }
 
 
@@ -74,3 +76,9 @@ def error_non_exist_order_id(order_id):
 def error_order_state(order_id):
     return 531, error_code[531].format(order_id)
 
+
+def error_non_exist_book_in_store(store_id):
+    return 532, error_code[532].format(store_id)
+
+def error_exist_comment():
+    return 533, error_code[533]

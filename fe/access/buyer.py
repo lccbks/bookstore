@@ -74,3 +74,28 @@ class Buyer:
         headers = {"token": self.token}
         r = requests.post(url, headers=headers, json=json)
         return r.status_code
+
+    def add_comment(self, store_id: str, book_id: str, comment: str, rate: int) -> int:
+        json = {
+            "user_id": self.user_id,
+            "store_id": store_id,
+            "book_id": book_id,
+            "comment": comment,
+            "rate": rate
+        }
+        url = urljoin(self.url_prefix, "add_comment")
+        headers = {"token": self.token}
+        r = requests.post(url, headers=headers, json=json)
+        return r.status_code
+
+    def view_comments(self, store_id: str, book_id: str) -> (int,[str]):
+        json = {
+            "user_id": self.user_id,
+            "store_id": store_id,
+            "book_id": book_id
+        }
+        url = urljoin(self.url_prefix, "view_comments")
+        headers = {"token": self.token}
+        r = requests.post(url, headers=headers, json=json)
+        response_json = r.json()
+        return r.status_code, response_json.get("comments")

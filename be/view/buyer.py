@@ -69,3 +69,26 @@ def cancel_order():
     b = Buyer()
     code, message = b.cancel_order(user_id, password, order_id)
     return jsonify({"message": message}), code
+
+
+@bp_buyer.route("/add_comment", methods=["POST"])
+def add_comment():
+    user_id: str = request.json.get("user_id")
+    store_id: str = request.json.get("store_id")
+    book_id: str = request.json.get("book_id")
+    comment: str = request.json.get("comment")
+    rate: int = request.json.get("rate")
+    b = Buyer()
+    code, message = b.add_comment(user_id, store_id, book_id, comment, rate)
+    return jsonify({"message": message}), code
+
+
+@bp_buyer.route("/view_comments", methods=["POST"])
+def view_comments():
+    user_id: str = request.json.get("user_id")
+    store_id: str = request.json.get("store_id")
+    book_id: str = request.json.get("book_id")
+    b = Buyer()
+    print(b.view_comments(user_id, store_id, book_id))
+    code, message, comments = b.view_comments(user_id, store_id, book_id)
+    return jsonify({"message": message, "comments": comments}), code
