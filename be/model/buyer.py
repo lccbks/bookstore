@@ -357,3 +357,57 @@ class Buyer(db_conn.DBConn):
         except BaseException as e:
             return 530, "{}".format(str(e)), "null"
         return 200, "ok", comments
+
+    def add_into_cart(self, user_id: str, store_id: str, book_id: str, count: int) -> (int, str):
+        try:
+            if not self.user_id_exist(user_id):
+                return error.error_non_exist_user_id(user_id)
+            if not self.store_id_exist(store_id):
+                return error.error_non_exist_store_id(store_id)
+            self.cursor.execute("SELECT * FROM store "
+                                "WHERE store_id = %s AND book_id = %s",
+                                (store_id, book_id))
+            row = self.cursor.fetchone()
+            if row is None:
+                return error.error_non_exist_book_in_store(store_id)
+            self.cursor.execute("SELECT * FROM user_cart "
+                                "WHERE user_id = %s AND store_id = %s AND book_id = %s ",
+                                (user_id, store_id, book_id))
+            row = self.cursor.fetchone()
+            if row is None:
+                self.cursor.execute("INSERT INTO user_cart "
+                                    "(user_id, store_id, book_id, count) "
+                                    "VALUE (%s, %s, %s, %s) ",
+                                    (user_id, store_id, book_id, count))
+                self.conn.commit()
+            else:
+                self.cursor.execute("UPDATE user_cart SET count = %s "
+                                    "WHERE user_id = %s AND store_id = %s AND book_id = %s ",
+                                    row[3] + count)
+                self.conn.commit()
+        except pymysql.Error as e:
+            return 528, "{}".format(str(e))
+        except BaseException as e:
+            return 530, "{}".format(str(e))
+        return 200, "ok"
+
+    def view_cart(self, user_id: str) -> (int, str, {str: [(str, int)]}):
+        try:
+            if not self.user_id_exist(user_id):
+                return error.error_non_exist_user_id(user_id) + ({},)
+            self.cursor.execute("SELECT * FROM user_cart "
+                                "WHERE user_id = %s",
+                                user_id)
+            row = self.cursor.fetchall()
+            cart = {}
+            for i in row:
+                if i[1] in cart:
+                    cart[i[1]].append((i[2], i[3]))
+                else:
+                    cart[i[1]] = []
+                    cart[i[1]].append((i[2], i[3]))
+        except pymysql.Error as e:
+            return 528, "{}".format(str(e)), {}
+        except BaseException as e:
+            return 530, "{}".format(str(e)), {}
+        return 200, "ok", cart

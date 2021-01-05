@@ -89,6 +89,24 @@ def view_comments():
     store_id: str = request.json.get("store_id")
     book_id: str = request.json.get("book_id")
     b = Buyer()
-    print(b.view_comments(user_id, store_id, book_id))
     code, message, comments = b.view_comments(user_id, store_id, book_id)
     return jsonify({"message": message, "comments": comments}), code
+
+
+@bp_buyer.route("/add_into_cart",methods=["POST"])
+def add_into_cart():
+    user_id: str = request.json.get("user_id")
+    store_id: str = request.json.get("store_id")
+    book_id: str = request.json.get("book_id")
+    count: int = request.json.get("count")
+    b = Buyer()
+    code, message = b.add_into_cart(user_id, store_id, book_id, count)
+    return jsonify({"message": message}), code
+
+
+@bp_buyer.route("/view_cart", methods=["POST"])
+def view_cart():
+    user_id: str = request.json.get("user_id")
+    b = Buyer()
+    code, message, cart = b.view_cart(user_id)
+    return jsonify({"message": message, "cart": cart}), code

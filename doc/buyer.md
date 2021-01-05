@@ -369,3 +369,85 @@ POST http://[address]/buyer/view_comments
 | 511  | 用户ID不存在         |
 | 513  | 商铺ID不存在         |
 | 532  | 该商铺中不存在该图书 |
+
+## 买家添加图书进入购物车
+
+#### URL:
+
+POST http://[address]/buyer/add_into_cart
+
+#### Requset
+
+##### Header:
+
+| key   | 类型   | 描述               | 是否可为空 |
+| ----- | ------ | ------------------ | ---------- |
+| token | string | 登录产生的会话标识 | N          |
+
+##### Body:
+
+```json
+{
+    "user_id":"$user id$",
+    "store_id":"$$store id",
+    "book_id":"$book id$",
+    "count": "$count"
+}
+```
+
+##### 属性说明：
+
+| key      | 类型   | 描述       | 是否可为空 |
+| -------- | ------ | ---------- | ---------- |
+| user_id  | string | 买家用户ID | N          |
+| store_id | string | 商铺ID     | N          |
+| book_id  | string | 图书ID     | N          |
+| count    | int    | 数量       | N          |
+
+#### Response
+
+##### Status Code:
+
+| 码   | 描述                 |
+| ---- | :------------------- |
+| 200  | 添加成功             |
+| 511  | 用户ID不存在         |
+| 513  | 商铺ID不存在         |
+| 532  | 该商铺中不存在该图书 |
+
+## 买家查看购物车
+
+#### URL:
+
+POST http://[address]/buyer/view_cart
+
+#### Requset
+
+##### Header:
+
+| key   | 类型   | 描述               | 是否可为空 |
+| ----- | ------ | ------------------ | ---------- |
+| token | string | 登录产生的会话标识 | N          |
+
+##### Body:
+
+```json
+{
+    "user_id":"$user id$"
+}
+```
+
+##### 属性说明：
+
+| key     | 类型   | 描述       | 是否可为空 |
+| ------- | ------ | ---------- | ---------- |
+| user_id | string | 买家用户ID | N          |
+
+#### Response
+
+##### Status Code:
+
+| 码   | 描述         |
+| ---- | :----------- |
+| 200  | 添加成功     |
+| 511  | 用户ID不存在 |

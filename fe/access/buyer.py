@@ -99,3 +99,25 @@ class Buyer:
         r = requests.post(url, headers=headers, json=json)
         response_json = r.json()
         return r.status_code, response_json.get("comments")
+
+    def add_into_cart(self, store_id: str, book_id: str, count: int) -> int:
+        json = {
+            "user_id": self.user_id,
+            "store_id": store_id,
+            "book_id": book_id,
+            "count": count
+        }
+        url = urljoin(self.url_prefix, "add_into_cart")
+        headers = {"token": self.token}
+        r = requests.post(url, headers=headers, json=json)
+        return r.status_code
+
+    def view_cart(self) -> (int, {str:[(str, int)]}):
+        json = {
+            "user_id": self.user_id
+        }
+        url = urljoin(self.url_prefix, "view_cart")
+        headers = {"token": self.token}
+        r = requests.post(url, headers=headers, json=json)
+        response_json = r.json()
+        return r.status_code, response_json.get("cart")

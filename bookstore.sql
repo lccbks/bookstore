@@ -61,6 +61,16 @@ create table if not exists bookstore.book_comment(
 	-- foreign key(store_id) references bookstore.store(store_id) on delete cascade on update cascade
 );
 
+create table if not exists bookstore.user_cart(
+	user_id varchar(200),
+	store_id varchar(200),
+	book_id varchar(200),
+	count int,
+	primary key(user_id, store_id, book_id)
+	-- foreign key(user_id) references bookstore.user(user_id) on delete cascade on update cascade,
+	-- foreign key(store_id) references bookstore.store(store_id) on delete cascade on update cascade
+);
+
 drop table if exists bookstore.search_author;
 
 create table bookstore.search_author (
