@@ -20,6 +20,7 @@ class TestCart:
         self.password = self.seller1_id
         yield
 
+    @pytest.mark.run(order=51)
     def test_ok(self):
         gen_book_1 = GenBook(self.seller1_id, self.store1_id)
         gen_book_2 = GenBook(self.seller2_id, self.store2_id)
@@ -43,6 +44,7 @@ class TestCart:
         assert code == 200
         assert cart == cart_test
 
+    @pytest.mark.run(order=52)
     def test_non_exist_book_in_store(self):
         gen_book_1 = GenBook(self.seller1_id, self.store1_id)
         ok, buy_book_id_list_1 = gen_book_1.gen(non_exist_book_id=False, low_stock_level=False, max_book_count=5)
@@ -54,6 +56,7 @@ class TestCart:
             code = self.buyer.add_into_cart(self.store1_id, i[0].id+"_x", i[1])
             assert code != 200
 
+    @pytest.mark.run(order=53)
     def test_non_exist_user(self):
         gen_book_1 = GenBook(self.seller1_id, self.store1_id)
         ok, buy_book_id_list_1 = gen_book_1.gen(non_exist_book_id=False, low_stock_level=False, max_book_count=5)
@@ -68,6 +71,7 @@ class TestCart:
         code, cart = self.buyer.view_cart()
         assert code != 200
 
+    @pytest.mark.run(order=54)
     def test_non_exist_store(self):
         gen_book_1 = GenBook(self.seller1_id, self.store1_id)
         ok, buy_book_id_list_1 = gen_book_1.gen(non_exist_book_id=False, low_stock_level=False, max_book_count=5)

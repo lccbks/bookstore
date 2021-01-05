@@ -20,6 +20,7 @@ class TestComment:
         self.rate = random.randint(0, 5)
         yield
 
+    @pytest.mark.run(order=55)
     def test_ok(self):
         gen_book = GenBook(self.seller_id, self.store_id)
         ok, buy_book_id_list = gen_book.gen(non_exist_book_id=False, low_stock_level=False, max_book_count=5)
@@ -53,6 +54,7 @@ class TestComment:
         assert code == 200
         assert comments[0] == self.comment
 
+    @pytest.mark.run(order=56)
     def test_comment_twice(self):
         gen_book = GenBook(self.seller_id, self.store_id)
         ok, buy_book_id_list = gen_book.gen(non_exist_book_id=False, low_stock_level=False, max_book_count=5)
@@ -88,6 +90,7 @@ class TestComment:
         code = self.buyer.add_comment(self.store_id, self.buy_book_info_list[0][0].id, self.comment, self.rate)
         assert code != 200
 
+    @pytest.mark.run(order=57)
     def test_non_exist_book_in_store(self):
         gen_book = GenBook(self.seller_id, self.store_id)
         ok, buy_book_id_list = gen_book.gen(non_exist_book_id=False, low_stock_level=False, max_book_count=5)
@@ -121,6 +124,7 @@ class TestComment:
         assert code != 200
         assert comments[0] != self.comment
 
+    @pytest.mark.run(order=58)
     def test_non_exist_order(self):
         gen_book = GenBook(self.seller_id, self.store_id)
         ok, buy_book_id_list = gen_book.gen(non_exist_book_id=False, low_stock_level=False, max_book_count=5)
@@ -131,6 +135,7 @@ class TestComment:
         code = self.buyer.add_comment(self.store_id, self.buy_book_info_list[0][0].id, self.comment, self.rate)
         assert code != 200
 
+    @pytest.mark.run(order=59)
     def test_comment_while_order_is_not_done(self):
         gen_book = GenBook(self.seller_id, self.store_id)
         ok, buy_book_id_list = gen_book.gen(non_exist_book_id=False, low_stock_level=False, max_book_count=5)
@@ -159,6 +164,7 @@ class TestComment:
         code = self.buyer.add_comment(self.store_id, self.buy_book_info_list[0][0].id, self.comment, self.rate)
         assert code != 200
 
+    @pytest.mark.run(order=60)
     def test_non_exist_user(self):
         gen_book = GenBook(self.seller_id, self.store_id)
         ok, buy_book_id_list = gen_book.gen(non_exist_book_id=False, low_stock_level=False, max_book_count=5)
@@ -192,6 +198,7 @@ class TestComment:
         code, comments = self.buyer.view_comments(self.store_id, self.buy_book_info_list[0][0].id)
         assert code != 200
 
+    @pytest.mark.run(order=61)
     def test_non_exist_store(self):
         gen_book = GenBook(self.seller_id, self.store_id)
         ok, buy_book_id_list = gen_book.gen(non_exist_book_id=False, low_stock_level=False, max_book_count=5)

@@ -25,12 +25,14 @@ class TestViewHistoricalOrder:
         self.time = time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.localtime(time.time()))
         yield
 
+    @pytest.mark.run(order=62)
     def test_ok(self):
         orders_test = [{"order_id": self.order_id, "store_id": self.store_id, "order_time": self.time, "state": "unpaid"}]
         code, orders = self.buyer.view_historical_order()
         assert code == 200
         assert orders == orders_test
 
+    @pytest.mark.run(order=63)
     def test_non_exist_user(self):
         orders_test = [
             {"order_id": self.order_id, "store_id": self.store_id, "order_time": self.time, "state": "unpaid"}]
