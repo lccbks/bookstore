@@ -411,3 +411,21 @@ class Buyer(db_conn.DBConn):
         except BaseException as e:
             return 530, "{}".format(str(e)), {}
         return 200, "ok", cart
+
+    def view_historical_order(self, user_id: str) -> (int, str, [{str: {str: str}}]):
+        try:
+            if not self.user_id_exist(user_id):
+                return error.error_non_exist_user_id(user_id) + ([],)
+            self.cursor.execute("SELECT * FROM new_order "
+                                "WHERE user_id = %s",
+                                user_id)
+            row = self.cursor.fetchall()
+            orders = []
+            for i in row:
+                order = {"order_id": i[0], "store_id": i[2], "order_time": i[3], "state": i[4]}
+                orders.append(order)
+        except pymysql.Error as e:
+            return 528, "{}".format(str(e)), []
+        except BaseException as e:
+            return 530, "{}".format(str(e)), []
+        return 200, "ok", orders
