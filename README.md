@@ -6,6 +6,8 @@
 
 - [数据库期末大作业-Online bookstore](#数据库期末大作业-online-bookstore)
   * [〇、安装运行](#〇安装运行)
+    * [本地运行](#本地运行)
+    * [Docker](#docker)
   * [〇、项目结构](#〇项目结构)
   * [一、数据库设计](#一数据库设计)
     + [ER图](#er图)
@@ -43,23 +45,51 @@
     + [3.2 吞吐量测试](#32-吞吐量测试)
     + [3.3 Git](#33-git)
     + [3.4 持续集成](#34-持续集成)
+    + [3.5 打包 Docker Image](35-打包dockerimage)
   * [四、分工](#四分工)
-
 
 ## 〇、安装运行
 
+### 本地运行
+
 ```shell
-# 安装 Python 3.8
+# Environment: Python 3.8 | Mysql 8.0
 # 安装依赖
 pip3 install -r requirements.txt
 
-# 安装 Mysql 8.0
-# 修改be/model/store.py中Store类中get_db_conn方法password字段值为Mysql数据库root用户的密码
-# 初始化数据库
+# init database
 mysql -u root -p<your password> < create_user.sql
 mysql -u bookstore -pBookstore@2020 < bookstore.sql
 
-# 执行测试
+# test
+bash script/test.sh
+
+# run
+python3 be/app.py    # 浏览器打开 http://127.0.0.1:5000 出现如下界面则表示运行成功
+```
+
+![](./image/index.png)
+
+### Docker
+
+```shell
+# 拉取远程镜像并创建容器运行
+docker run -it --name bookstore yxlee777/bookstore
+
+# 运行 Flask Web App
+python3 app.py
+
+# 新开一个终端并运行该容器
+docker exec -it bookstore /bin/bash
+
+# 使用 curl 工具访问 Flask Web App
+curl http://127.0.0.1:5000 | grep Welcome  # 返回 <h4>Welcome to bookstore!</h4> 表示成功
+
+# 使用 curl 工具进行 POST 测试
+# curl -H "Content-type:application/json" -X POST -d '{<json_data>}' URL
+curl -H "Content-type:application/json" -X POST -d '{"user_id":"yuxinli", "password":"123456"}' http://127.0.0.1:5000/auth/register  # 返回 {"message":"ok"}
+
+# 覆盖率测试（需新开一个终端）
 bash script/test.sh
 ```
 
@@ -632,6 +662,36 @@ bash script/test.sh
 
 #### 3.5 打包 Docker Image
 
+以 Ubuntu 为基础镜像构建 Python Flask Web 与 MySQL Database 的运行环境。
+
+```dockerfile
+# 以 Ubuntu 20.04 为基础镜像
+FROM ubuntu:20.04
+MAINTAINER yxlee777 yxleezw@163.com
+LABEL description="docker image for bookstore"
+# ADD sources.list /etc/apt/
+COPY . /home/bookstore
+WORKDIR /home/bookstore
+
+# 安装 Python、MySQL、curl 及所需依赖并初始化数据库
+RUN apt-get update \
+	&& apt-get install -y python3 python3-pip \
+	&& pip3 install -r /home/bookstore/requirements.txt \
+	&& apt-get install -y curl \
+	&& apt-get install -y mysql-server \
+	&& service mysql start \
+	&& mysql -u root < /home/bookstore/create_user.sql \
+	&& mysql -u bookstore -pBookstore@2020 < /home/bookstore/bookstore.sql
+
+EXPOSE 5000
+
+CMD export PYTHONPATH=$PYTHONPATH:$(pwd) \
+	&& service mysql start \
+	&& /bin/bash
+```
+
+
+
 
 
 ## 四、分工
@@ -640,7 +700,7 @@ bash script/test.sh
 
 （1/3）陈熙之-10182100123：数据库设计，buyer和seller的基本和扩展功能实现，功能测试，撰写接口文档，性能分析和优化
 
-（1/3）李昱鑫-10174507132：数据库设计，user 基本功能实现，下单与支付的存储过程实现，手动/自动取消订单，Git，持续集成，README
+（1/3）李昱鑫-10174507132：数据库设计，user 基本功能实现，下单与支付的存储过程实现，手动/自动取消订单，Git，持续集成，打包 Docker 镜像，README
 
 
 
