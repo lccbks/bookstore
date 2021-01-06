@@ -488,3 +488,40 @@ POST http://[address]/buyer/view_historical_orders
 | ---- | :----------- |
 | 200  | 查询成功     |
 | 511  | 用户ID不存在 |
+
+## 买家结算购物车中的物品
+
+#### URL:
+
+POST http://[address]/buyer/checkout_cart
+
+#### Requset
+
+##### Header:
+
+| key   | 类型   | 描述               | 是否可为空 |
+| ----- | ------ | ------------------ | ---------- |
+| token | string | 登录产生的会话标识 | N          |
+
+##### Body:
+
+```json
+{
+    "user_id":"$user id$"
+}
+```
+
+##### 属性说明：
+
+| key     | 类型   | 描述       | 是否可为空 |
+| ------- | ------ | ---------- | ---------- |
+| user_id | string | 买家用户ID | N          |
+
+#### Response
+
+##### Status Code:
+
+| 码   | 描述         |
+| ---- | :----------- |
+| 200  | 查询成功     |
+| 511  | 用户ID不存在 |

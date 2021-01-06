@@ -118,3 +118,11 @@ def view_historical_order():
     b = Buyer()
     code, message, orders = b.view_historical_order(user_id)
     return jsonify({"message": message, "orders": orders}), code
+
+
+@bp_buyer.route("/checkout_cart", methods=["POST"])
+def checkout_cart():
+    user_id: str = request.json.get("user_id")
+    b = Buyer()
+    code, message, cart = b.checkout_cart(user_id)
+    return jsonify({"message": message}), code

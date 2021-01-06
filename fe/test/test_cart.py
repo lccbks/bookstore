@@ -43,6 +43,8 @@ class TestCart:
         code, cart = self.buyer.view_cart()
         assert code == 200
         assert cart == cart_test
+        code = self.buyer.checkout_cart()
+        assert code == 200
 
     @pytest.mark.run(order=52)
     def test_non_exist_book_in_store(self):
@@ -69,6 +71,8 @@ class TestCart:
             code = self.buyer.add_into_cart(self.store1_id, i[0].id, i[1])
             assert code != 200
         code, cart = self.buyer.view_cart()
+        assert code != 200
+        code = self.buyer.checkout_cart()
         assert code != 200
 
     @pytest.mark.run(order=54)

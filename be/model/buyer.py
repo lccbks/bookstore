@@ -429,3 +429,26 @@ class Buyer(db_conn.DBConn):
         except BaseException as e:
             return 530, "{}".format(str(e)), []
         return 200, "ok", orders
+
+    def checkout_cart(self, user_id: str, password: str) -> (int, str):
+        try:
+            if not self.user_id_exist(user_id):
+                return error.error_non_exist_user_id(user_id) + ({},)
+            self.cursor.execute("SELECT * FROM user_cart "
+                                "WHERE user_id = %s",
+                                user_id)
+            row = self.cursor.fetchall()
+            cart = {}
+            for i in row:
+                if i[1] in cart:
+                    cart[i[1]].append((i[2], i[3]))
+                else:
+                    cart[i[1]] = []
+                    cart[i[1]].append((i[2], i[3]))
+            for key, value in cart.items():
+                self.new_order(user_id, key, value)
+        except pymysql.Error as e:
+            return 528, "{}".format(str(e)), {}
+        except BaseException as e:
+            return 530, "{}".format(str(e)), {}
+        return 200, "ok", cart
