@@ -134,7 +134,8 @@ class Buyer:
 
     def checkout_cart(self) -> int:
         json = {
-            "user_id": self.user_id
+            "user_id": self.user_id,
+            "password": self.password
         }
         url = urljoin(self.url_prefix, "checkout_cart")
         headers = {"token": self.token}
