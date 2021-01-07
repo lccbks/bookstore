@@ -68,7 +68,7 @@ bash script/test.sh
 python3 be/app.py    # 浏览器打开 http://127.0.0.1:5000 出现如下界面则表示运行成功
 ```
 
-![](./image/index.png)
+<img src="./image/index.png" border="1" style="zoom:100%;"/>
 
 ### Docker
 
@@ -107,9 +107,6 @@ bash script/test.sh
 │   ├── serve.py
 │   └── view						# flask 前端接口
 │       └── ...
-├── bookstore.sql					# 数据库初始化
-├── doc								# JSON API
-│   └── ...
 ├── fe								# 测试
 │   ├── access						# http访问接口
 │   │   └── ...
@@ -123,10 +120,16 @@ bash script/test.sh
 │   ├── __init__.py
 │   └── test						# 功能及覆盖率测试
 │       └── ...
+├── doc								# JSON API
+│   └── ...
 ├── image
 │   └── ...
 ├── README.md
-├── requirements.txt
+├── create_user.sql					# 数据库初始化
+├── bookstore.sql					# 数据库初始化
+├── requirements.txt				# python依赖
+├── .travis.yml						# travis-ci 持续集成
+├── Dockerfile						# docker image build script
 ├── script
 │   └── test.sh
 └── setup.py
@@ -640,11 +643,46 @@ bash script/test.sh
 
 ### 3.2 吞吐量测试
 
+![](./image/bench_local_nsp.png)
+
+在本地不使用存储过程的情况下：
+
+- 吞吐量：17212 笔/秒
+- 延迟：0.03370 秒/笔
+
+![](./image/bench_local_sp.png)
+
+本地使用存储过程：
+
+- 吞吐量：30772 笔/秒
+- 延迟：0.01696 秒/笔
+
+![](./image/bench_remote_nsp.png)
+
+远程（云主机）不使用存储过程：
+
+- 吞吐量：14429 笔/秒
+- 延迟：0.03576 秒/笔
+
+![](./image/bench_remote_sp.png)
+
+远程（云主机）使用存储过程：
+
+- 吞吐量：24835 笔/秒
+- 延迟：0.02083 秒/笔
+
+|      |          使用存储过程           |         不使用存储过程          |
+| :--: | :-----------------------------: | :-----------------------------: |
+| 本地 | TPS_C=30072<br/>LATENCY=0.01696 | TPS_C=17212<br/>LATENCY=0.03370 |
+| 远程 | TPS_C=24835<br/>LATENCY=0.02083 | TPS_C=14429<br/>LATENCY=0.03576 |
+
+可以看到使用存储过程减少了大量的SQL语句的发送，对于程序性能和并发有着较为明显的提高。
+
 
 
 ### 3.3 Git
 
-由于项目开发过程中90%以上均为成员全部在场时进行开发，因此在Git仓库中仅维持一条 `main` 分支，成员之间通过 `git stash` 保存本地改动之后使用 `git pull` 下拉远程仓库的提交，然后使用 `git stash pop` 再将本地改动重新应用至本地代码。
+为方便起见，在Git仓库中仅维持一条 `main` 分支，成员之间通过 `git stash` 保存本地改动之后使用 `git pull` 下拉远程仓库的提交，然后使用 `git stash pop` 再将本地改动重新应用至本地代码。
 
 在完成基本功能并通过测试后，标记提交为 `v1.1.0` 并重新创建一个分支 `Version1.1.0` 保存该版本内容。完成所有功能并通过测试后，标题提交为 `v1.1.2` 并创建分支 `Version1.1.2` 保存该版本的内容。
 
@@ -696,11 +734,11 @@ CMD export PYTHONPATH=$PYTHONPATH:$(pwd) \
 
 ## 四、分工
 
-（1/3）陈丘轲-10184102116：ER图设计，倒排索引表设计和实现，功能测试，git版本控制，搜索图书功能设计，搜索功能实现，PPT制作
+（33%）陈丘轲-10184102116：ER图设计，buyer基本功能实现，倒排索引表设计和实现，功能测试，git版本控制，搜索图书功能设计，搜索功能实现，PPT制作与汇报
 
-（1/3）陈熙之-10182100123：数据库设计，buyer和seller的基本和扩展功能实现，功能测试，撰写接口文档，性能分析和优化
+（33%）陈熙之-10182100123：数据库设计，buyer和seller的基本和扩展功能(收发货、订单状态、购物车、评论、历史记录)实现，功能测试，撰写接口文档，性能分析和优化
 
-（1/3）李昱鑫-10174507132：数据库设计，user 基本功能实现，下单与支付的存储过程实现，手动/自动取消订单，Git，持续集成，打包 Docker 镜像，README
+（33%）李昱鑫-10174507132：数据库设计，user 基本功能实现，下单与支付的存储过程实现，手动/自动取消订单，Git，持续集成，打包 Docker 镜像，吞吐量测试，README
 
 
 
