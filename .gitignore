@@ -11,3 +11,5 @@
 /.pytest_cache
 /app.log
 /.coverage
+/fe/data/book_lx.db
+/fe/bench/bench.log
