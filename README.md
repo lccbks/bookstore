@@ -1,4 +1,4 @@
-# 数据库期末大作业-Online bookstore
+# 数据库期末项目-Online bookstore
 
 [![Build Status](https://travis-ci.org/lccbks/bookstore.svg?branch=Version1.1.2)](https://travis-ci.org/lccbks/bookstore)
 [![codecov](https://codecov.io/gh/lccbks/bookstore/branch/Version1.1.2/graph/badge.svg?token=zRk8FPAnuY)](https://codecov.io/gh/lccbks/bookstore)
